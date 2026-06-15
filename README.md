@@ -88,7 +88,11 @@ After the scene is drawn with the Canvas 2D API, the raw RGBA pixel data is quan
 
 **White-area protection**: pixels that are pure white (all channels ≥ 250) in the rendered scene are snapshotted before dithering begins. During the dither pass they are forced back to white and emit no error, preventing colour bleed from adjacent dithered regions into large white areas.
 
-### 6. Output
+### 6. Stale data warning
+
+If `assets/data/trash.csv` contains no entries with a date after today, a red **"Update trash data!"** badge is drawn in the lower-right corner of the display. This serves as a visible reminder to extend the schedule before the data runs out.
+
+### 7. Output
 
 The finished image is written to `output/display.png` and committed back to the repository by the workflow bot (`github-actions[bot]`). Commits that produce no pixel change are skipped. The commit message includes `[skip ci]` to prevent re-triggering the workflow.
 

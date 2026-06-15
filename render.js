@@ -139,6 +139,7 @@ function parseTrash() {
   return {
     today:    entries.find(e => e.date === todayStr)?.type    ?? null,
     tomorrow: entries.find(e => e.date === tomorrowStr)?.type ?? null,
+    stale:    !entries.some(e => e.date > todayStr),
   };
 }
 
@@ -206,7 +207,7 @@ async function fetchWeather() {
 
 // ── Drawing ───────────────────────────────────────────────────────────────────
 
-function drawScene(ctx, now, headlineImg, illustrationImg) {
+function drawScene(ctx, now, headlineImg, illustrationImg, trashStale) {
   const deHour = Number(
     now.toLocaleString('en-US', { timeZone: 'Europe/Berlin', hour: 'numeric', hour12: false })
   ) % 24;
@@ -259,6 +260,22 @@ function drawScene(ctx, now, headlineImg, illustrationImg) {
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
   ctx.fillText(ts, 8, FOOTER_Y + 12);
+
+  if (trashStale) {
+    const WARNING = 'Update trash data!';
+    ctx.font = 'bold 14px sans-serif';
+    const tw  = ctx.measureText(WARNING).width;
+    const PAD = 8;
+    const bx  = WIDTH - tw - PAD * 2 - 8;
+    const by  = FOOTER_Y - 1;
+    const bh  = 26;
+    ctx.fillStyle = rgbStr(PALETTE[2]);       // red box
+    ctx.fillRect(bx, by, tw + PAD * 2, bh);
+    ctx.fillStyle = rgbStr(PALETTE[1]);       // white text
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillText(WARNING, bx + PAD, by + bh / 2);
+  }
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -285,7 +302,7 @@ const [headlineImg, illustrationImg] = await Promise.all([
   loadImage(illustrationFile),
 ]);
 
-drawScene(ctx, now, headlineImg, illustrationImg);
+drawScene(ctx, now, headlineImg, illustrationImg, trash.stale);
 
 const imgData = ctx.getImageData(0, 0, WIDTH, HEIGHT);
 floydSteinberg(imgData.data, WIDTH, HEIGHT);
