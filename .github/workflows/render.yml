@@ -7,6 +7,9 @@ on:
     - cron: '0 16 * * *'   # 17:00 CET (UTC+1) — afternoon
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: write
 
