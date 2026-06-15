@@ -1,0 +1,49 @@
+name: Render e-ink display
+
+on:
+  schedule:
+    - cron: '0 4  * * *'   # 05:00 CET (UTC+1) — morning
+    - cron: '0 11 * * *'   # 12:00 CET (UTC+1) — midday
+    - cron: '0 16 * * *'   # 17:00 CET (UTC+1) — afternoon
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install system libraries for node-canvas
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Render display image
+        run: node render.js
+
+      - name: Commit and push output
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/display.png
+          if git diff --cached --quiet; then
+            echo "Nothing to commit — image unchanged."
+          else
+            git commit -m "chore: update display render [skip ci]"
+            git push
+          fi

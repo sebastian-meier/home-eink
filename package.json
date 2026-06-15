@@ -1,0 +1,12 @@
+{
+  "name": "home-eink",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "render": "node render.js"
+  },
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "p5": "^2.3.0"
+  }
+}

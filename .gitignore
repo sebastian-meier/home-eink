@@ -1,3 +1,9 @@
+# Generated output
+output/
+
+# macOS
+.DS_Store
+
 # Logs
 logs
 *.log
