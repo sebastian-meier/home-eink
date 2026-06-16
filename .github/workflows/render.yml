@@ -2,9 +2,11 @@ name: Render e-ink display
 
 on:
   schedule:
-    - cron: '0 4  * * *'   # 05:00 CET (UTC+1) — morning
-    - cron: '0 11 * * *'   # 12:00 CET (UTC+1) — midday
-    - cron: '0 16 * * *'   # 17:00 CET (UTC+1) — afternoon
+    # GitHub Actions can delay scheduled runs (commonly ~2h, worse at :00).
+    # Fire 2h early and off the hour to land closer to the intended local time.
+    - cron: '37 2  * * *'   # targets ~05:00 local — morning
+    - cron: '37 9  * * *'   # targets ~12:00 local — midday
+    - cron: '37 14 * * *'   # targets ~17:00 local — afternoon
   workflow_dispatch:
 
 env:
@@ -21,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node 20
+      - name: Set up Node 24
         uses: actions/setup-node@v4
         with:
           node-version: '24'

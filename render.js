@@ -254,7 +254,7 @@ function drawScene(ctx, now, headlineImg, illustrationImg, trashStale) {
 
   // ── Footer ────────────────────────────────────────────────────────────────────
   const FOOTER_Y = HEIGHT - 24;
-  const ts = `${now.toISOString().replace('T', ' ').slice(0, 19)}`;
+  const ts = now.toLocaleString('sv-SE', { timeZone: 'Europe/Berlin' });
   ctx.fillStyle = rgbStr(PALETTE[0]);
   ctx.font = '12px monospace';
   ctx.textBaseline = 'middle';
